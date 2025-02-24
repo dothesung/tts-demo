@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="TS Demo - Công cụ chuyển đổi văn bản thành giọng nói tiếng Việt và nhiều ngôn ngữ khác.">
+        <meta name="keywords" content="TTS,Text-to-Speech,Edge TTS,Tiếng Việt,Giọng nói,Chuyển đổi văn bản">
+        <meta name="author" content="Park Ji Sung">
+        <meta name="robots" content="index,follow">
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="TTS Demo - Tiếng Việt">
+        <meta property="og:description" content="Công cụ chuyển đổi văn bản thành giọng nói tiếng Việt và nhiều ngôn ngữ khác.">
+        <meta property="og:image" content="https://miro.medium.com/v2/resize:fit:700/1*yDgVdq8--I5pUyGodlzswg.jpeg">
+        <meta property="og:url" content="/index.html">
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="TTS Demo - Tiếng Việt">
+        <meta name="twitter:description" content="Công cụ chuyển đổi văn bản thành giọng nói tiếng Việt và nhiều ngôn ngữ khác.">
+        <meta name="twitter:image" content="https://miro.medium.com/v2/resize:fit:700/1*yDgVdq8--I5pUyGodlzswg.jpeg">
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" sizes="32x32" href="https://cxcli.xavidop.me/images/tts.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="https://cxcli.xavidop.me/images/tts.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="https://cxcli.xavidop.me/images/tts.png">
+
+        <!-- Preconnect và Preload -->
+        <link rel="preconnect" href="https://speech.platform.bing.com">
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+        <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+         <!-- Stylesheets -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+        <!-- Liên kết đến file CSS tùy chỉnh của bạn -->
+        <link rel="stylesheet" href="styles.css"> 
+
+        <title>Edge TTS Demo - Tiếng Việt</title>
+
+</head>
+<body>
+        <h1>Text-to-Speech - Tiếng Việt</h1>
+     
+        <div class="container">
+                <div class="tabs">
+                        <div class="tab active" data-tab="text">Văn Bản</div>
+                        <div class="tab" data-tab="ssml">SSML</div>
+                        <div class="tab" data-tab="tools">Công cụ</div>
+                        <div class="tab" data-tab="settings">Cài Đặt</div>
+                </div>
+
+                <div class="tab-content active" id="text">
+                        <div class="section">
+                                <h3>Chuyển Văn Bản Sang Giọng Nói</h3>
+                                <textarea id="textInput" rows="5" placeholder="Nhập hoặc dán văn bản vào đây..."></textarea>
+                                <div class="input-group">
+                                        <label for="srtFileInput">Chọn nhiều tệp văn bản (văn bản sẽ được ghép lại):</label>
+                                        <input type="file" id="srtFileInput" accept=".txt,.srt,.vtt,.html,.json,.xml" multiple>
+                                </div>
+                                                        <span class="loading-spinner mainAudioSpinner"><i class="fas fa-spinner"></i></span>
+                                <button id="speakButton"><i class="fas fa-play"></i> Đọc Văn Bản</button>
+                                <button id="generateTextButton"><i class="fas fa-cog"></i> Tạo Âm Thanh <span class="loading-spinner generateTextSpinner"><i class="fas fa-spinner"></i></span></button>
+                                <button id="downloadTextButton"><i class="fas fa-download"></i> Tải Âm Thanh</button>
+                        </div>
+                </div>
+
+                <div class="tab-content" id="ssml">
+                        <div class="section">
+                                <h3>Chuyển SSML Sang Giọng Nói</h3>
+                                <div class="input-group">
+                                        <label for="ssmlFileInputTab">Tải lên tệp SSML:</label>
+                                        <input type="file" id="ssmlFileInputTab" accept=".xml,.ssml">
+                                </div>
+                                <textarea id="ssmlInput" rows="5" placeholder="Nhập SSML vào đây..."></textarea>
+                                <button id="generateSSMLButton"><i class="fas fa-cog"></i> Tạo Âm Thanh <span class="loading-spinner generateSSMLSpinner"><i class="fas fa-spinner"></i></span></button>
+                                <button id="downloadSSMLButton"><i class="fas fa-download"></i> Tải Âm Thanh</button>
+                        </div>
+                </div>
+
+                <div class="tab-content" id="tools">
+                        <div class="tool-section">
+                                <h3>SRT sang SSML</h3>
+                                <div class="input-group">
+                                        <label for="srtToolFileInput">Tải lên tệp SRT:</label>
+                                        <input type="file" id="srtToolFileInput" accept=".srt">
+                                </div>
+                                <textarea id="srtInput" placeholder="Hoặc nhập nội dung SRT vào đây"></textarea>
+                                <button onclick="srtToSsml()"><i class="fas fa-exchange-alt"></i> Chuyển đổi SRT sang SSML <span class="loading-spinner srtToSsmlSpinner"><i class="fas fa-spinner"></i></span></button>
+                                <textarea id="ssmlOutput" placeholder="Kết quả SSML sẽ hiển thị ở đây" readonly></textarea>
+                                <button id="downloadSsmlToolButton" disabled onclick="downloadSsmlToolFile()"><i class="fas fa-download"></i> Tải xuống SSML</button>
+                        </div>
+
+                        <div class="tool-section">
+                                <h3>SSML sang SRT</h3>
+                                <div class="input-group">
+                                        <label for="ssmlToolFileInput">Tải lên tệp SSML:</label>
+                                        <input type="file" id="ssmlToolFileInput" accept=".xml,.ssml">
+                                </div>
+                                <textarea id="ssmlInputReverse" placeholder="Hoặc nhập nội dung SSML vào đây"></textarea>
+                                <button onclick="ssmlToSrt()"><i class="fas fa-exchange-alt"></i> Chuyển đổi SSML sang SRT <span class="loading-spinner ssmlToSrtSpinner"><i class="fas fa-spinner"></i></span></button>
+                                <textarea id="srtOutputReverse" placeholder="Kết quả SRT sẽ hiển thị ở đây" readonly></textarea>
+                                 <button id="downloadSrtToolButton" disabled onclick="downloadSrtToolFile()"><i class="fas fa-download"></i> Tải xuống SRT</button>
+                        </div>
+                </div>
+
+                <div class="tab-content" id="settings">
+                        <div class="section">
+                                <h3>Cài Đặt Giọng Đọc</h3>
+                                <div class="input-group">
+                                        <label for="localeFilter">Ngôn Ngữ:</label>
+                                        <select id="localeFilter"></select>
+                                </div>
+                                <div class="input-group">
+                                        <label for="voiceSelect">Giọng Đọc:</label>
+                                        <select id="voiceSelect"></select>
+                                </div>
+                                <div class="input-group">
+                                        <label for="pitch">Cao Độ:<span id="pitchValue">0Hz</span></label>
+                                        <input type="range" id="pitch" min="-100" max="100" value="0">
+                                </div>
+                                <div class="input-group">
+                                        <label for="rate">Tốc Độ:<span id="rateValue">10%</span></label>
+                                        <input type="range" id="rate" min="-100" max="100" value="10">
+                                </div>
+                                <div class="input-group">
+                                        <label for="volume">Âm Lượng:<span id="volumeValue">80%</span></label>
+                                        <input type="range" id="volume" min="0" max="100" value="80">
+                                </div>
+                                <div class="input-group">
+                                        <input type="checkbox" id="multiAudioLines">
+                                        <label for="multiAudioLines">Tạo Nhiều Âm Thanh (mỗi dòng một tệp)</label>
+                                </div>
+                        </div>
+                </div>
+
+
+                <div class="section">
+                        <audio id="audioPlayer" controls></audio>
+                        <progress id="audioProgress" value="0" max="100"></progress>
+                        <p id="audioSuccessMessage">Âm thanh được tạo thành công.</p>
+                        <p id="status"></p>
+                </div>
+        </div>
+
+        <footer>
+                <p>© 2025 TTS - Tiếng Việt. Phát triển bởi <a href="/" class="text-gray-400 hover:text-gray-500">Vipo.Top </a></p>
+        </footer>
+                <script src="script.js" defer></script>
+</body>
+</html>
